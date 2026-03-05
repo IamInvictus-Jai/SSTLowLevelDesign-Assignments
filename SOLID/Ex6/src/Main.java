@@ -3,20 +3,13 @@ public class Main {
         System.out.println("=== Notification Demo ===");
         AuditLog audit = new AuditLog();
 
-        Notification n = new Notification("Welcome", "Hello and welcome to SST!", "riya@sst.edu", "9876543210");
+        EmailSender email = new EmailSender(audit);
+        SmsSender sms = new SmsSender(audit);
+        WhatsAppSender wa = new WhatsAppSender(audit);
 
-        NotificationSender email = new EmailSender(audit);
-        NotificationSender sms = new SmsSender(audit);
-        NotificationSender wa = new WhatsAppSender(audit);
-
-        email.send(n);
-        sms.send(n);
-        try {
-            wa.send(n);
-        } catch (RuntimeException ex) {
-            System.out.println("WA ERROR: " + ex.getMessage());
-            audit.add("WA failed");
-        }
+        email.send(new EmailMessage("riya@sst.edu", "Welcome", "Hello and welcome to SST!"));
+        sms.send(new SmsMessage("9876543210", "Hello and welcome to SST!"));
+        wa.send(new WhatsAppMessage("9876543210", "Hello and welcome to SST!")); // no + → handled internally
 
         System.out.println("AUDIT entries=" + audit.size());
     }
